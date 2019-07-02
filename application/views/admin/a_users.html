@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewpor" content="width=device-width,initial-scale=1.0">
+    <title>落音</title>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap-theme.css';?>" />
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap-theme.min.css';?>" />
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap.css';?>" />
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap.min.css';?>" />
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/style.css';?>" />
+
+    <script src="<?php echo base_url().'/resource/js/jquery.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/jquery.min.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/bootstrap.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/bootstrap.min.js'; ?>"></script>
+    <style type="text/css">
+        input {
+            width: 120px;
+        }
+    </style>
+    <script>
+        //删除用户
+        function delete_users(u_id) {
+            if(confirm("确定删除"))
+            {
+            var url = "<?php echo site_url('/admin/user_delete');?>";
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data:{
+                    u_id: u_id
+                },
+                dataType: "JSON",
+
+                success: function (data) {
+                    var i;
+                    var str = '';
+                    var state ='';
+                    for (i = 0; i < data['user_info'].length; i++) {
+                        if (data['user_info'][i]["state"]==0){
+                            state = "屏蔽";
+                        }else{
+                            state = "开启";
+                        }
+                        str += "<tr id='"+
+                            data['user_info'][i]["uid"]+
+                            "'><td>" +
+                            data['user_info'][i]["u_name"] +
+                            "</td><td>" +
+                            data['user_info'][i]["u_passw"] +
+                            "</td><td>" +
+                            data['user_info'][i]["u_passw"] +
+                            "</td><td>" +
+                            state +
+                            "</td><td>" +
+                            "<button name='delete' onclick='delete_user("+
+                            data['user_info'][i]["u_id"]+
+                            ")' class='delete_user' value='" +
+                            data['user_info'][i]["u_id"] +
+                            "'>" +
+                            "删除</button>" +
+                            "<button name='edit' onclick='edit_user("+
+                            data['user_info'][i]["u_id"]+
+                            ")' class='edit_user' value='" +
+                            data['user_info'][i]["u_id"] + "'>" +
+                            "编辑</button>" +
+                            "</td></tr>";
+                    }
+                    $("#user_info").html(str);
+                },
+                error: function (msg)
+                {//ajax请求失败后触发的方法
+                    alert("错误");//弹出错误信息
+                }
+            });
+            }
+        }
+        //修改用户
+        function edit_user(u_id) {
+                var url = "<?php echo site_url('/admin/get_user_info');?>";
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    u_id: u_id
+                },
+                dataType: "JSON",
+                success: function (data) {
+                    var str = "<td>" +
+                        "<input type='text' required='required' name='u_name' placeholder='用户名' " +
+                        "value = '" +
+                        data['special_user'][0]['u_name'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='u_passw' placeholder='密码' " +
+                        "value='" +
+                        data['special_user'][0]['u_passw'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<select name='userstate' class='user_state_select'>" +
+                        "<option value='1' >开启</option>" +
+                        "<option value='0' >屏蔽</option>" +
+                        "</select>" +
+                        "</td><td>" +
+                        "<button name='save' onclick='edit_user_save(" +
+                        data['special_user'][0]['u_id'] +
+                        ")' class='edit_user_save' " +
+                        "value='" +
+                        data['special_user'][0]['u_id'] +
+                        "'>" +
+                        "保存" +
+                        "</button></td>";
+
+                    $("#" + data['special_user'][0]['u_id']).html(str);
+                },
+                error: function (msg) {//ajax请求失败后触发的方法
+                    alert("错误");//弹出错误信息
+                }
+            });
+        }
+        //保存修改的用户
+        function edit_user_save(u_id) {
+            var u_name = document.getElementById(u_id).getElementsByTagName("input")[0].value;
+            var u_passw = document.getElementById(u_id).getElementsByTagName("input")[1].value;
+            var select = $('.user_state_select option:selected').val();
+            var url = "<?php echo site_url('/admin/user_change');?>";
+            var str = '';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    u_id: u_id,
+                    u_name: u_name,
+                    u_passw:u_passw,
+                    select: select
+                },
+                dataType: "JSON",
+                success: function (data) {
+                    var state = '';
+                    if (data['special_user'][0]["state"]==0){
+                        state = "屏蔽";
+                    }else{
+                        state = "开启";
+                    }
+                    str += "<td>" +
+                        data['special_user'][0]["u_name"] +
+                        "</td><td>" +
+                        data['special_user'][0]["u_passw"] +
+                        "</td><td>" +
+                        state +
+                        "</td><td>" +
+                        "<button name='delete' onclick='delete_users("+
+                        data['special_user'][0]["u_id"]+
+                        ")' class='delete_user' value='" +
+                        data['special_user'][0]["u_id"] +
+                        "'>" +
+                        "删除</button>" +
+                        "<button name='edit' onclick='edit_user("+
+                        data['special_user'][0]["u_id"]+
+                        ")' class='edit_user' value='" +
+                        data['special_user'][0]["u_id"] + "'>" +
+                        "编辑</button>" +
+                        "</td>";
+
+                    $("#" + data['special_user'][0]['u_id']).html(str);
+                    alert("保存成功！！！");
+                },
+                error: function (msg) {//ajax请求失败后触发的方法
+                    alert("错误");//弹出错误信息
+                }
+            });
+        }
+
+    </script>
+
+</head>
+
+<body  class="bg-success">
+
+<div class="container" >
+    <h1>用户管理</h1>
+    <table class="table table-hover">
+        <thead>
+        <td >用户名</td>
+        <td >密码</td>
+        <td >状态</td>
+        <td >操作</td>
+        </thead>
+        <tbody id="user_info">
+        <?php foreach($user_info as $v): ?>
+        <tr id="<?php echo $v['u_id'];?>">
+            <td>
+                <?php echo $v['u_name'];?>
+            </td>
+            <td>
+                <?php echo $v['u_passw'];?>
+            </td>
+            <td>
+                <?php
+                 if($v['state'] == 0)echo "屏蔽";
+                 else echo "开启";
+              ?>
+            </td>
+            <td>
+                <button name="delete" value="<?php echo $v['u_id'];?>" onclick="delete_users(value)">
+                    删除
+                </button>
+                <button name="edit"    value="<?php echo $v['u_id'];?>" onclick="edit_user(value )" >
+                    编辑
+                </button>
+            </td>
+        </tr>
+        <?php endforeach ?>
+    </table>
+</div>
+
+</body>
+
+</html>

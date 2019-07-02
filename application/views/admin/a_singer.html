@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewpor" content="width=device-width,initial-scale=1.0">
+    <title>落音</title>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap-theme.css';?>"/>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap-theme.min.css';?>"/>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap.css';?>"/>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap.min.css';?>"/>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/style.css';?>"/>
+
+    <script src="<?php echo base_url().'/resource/js/jquery.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/jquery.min.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/bootstrap.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/bootstrap.min.js'; ?>"></script>
+    <style type="text/css">
+        input {
+            width: 120px;
+        }
+    </style>
+    <script>
+        //删除
+        function delet(id) {
+            if (confirm("确定删除")) {
+                var url = "<?php echo site_url('/admin/deletesinger');?>";
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        id: id
+                    },
+                    dataType: "JSON",
+
+                    success: function (data) {
+                        var i;
+                        var str = '';
+                        for (i = 0; i < data['singer'].length; i++) {
+                            str += "<tr id='" +
+                                data['singer'][i]["id"] +
+                                "'><td>" +
+                                data['singer'][i]["s_name"] +
+                                "</td><td>" +
+                                data['singer'][i]["s_sex"] +
+                                "</td><td>" +
+                                data['singer'][i]["s_address"] +
+                                "</td><td>" +
+                                data['singer'][i]["s_company"] +
+                                "</td><td>" +
+                                "<button name='delete' onclick='delet(" +
+                                data['singer'][i]["id"] +
+                                ")'  value='" +
+                                data['singer'][i]["id"] +
+                                "'>" +
+                                "删除</button>" +
+                                "<button name='edit' onclick='edit(" +
+                                data['singer'][i]["id"] +
+                                ")' value='" +
+                                data['singer'][i]["id"] + "'>" +
+                                "编辑</button>" +
+                                "</td></tr>";
+                        }
+                        $("#singer").html(str);
+                        alert("成功");
+                    },
+                    error: function (msg) {//ajax请求失败后触发的方法
+                        alert("错误");//弹出错误信息
+                    }
+                });
+            }
+        }
+        //修改
+        function edit(id) {
+            var url = "<?php echo site_url('/admin/getsinger');?>";
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    id: id
+                },
+                dataType: "JSON",
+                success: function (data) {
+                    var str = "<td>" +
+                        "<input type='text' required='required' name='s_name'  " +
+                        "value='" +
+                        data['special_singer'][0]['s_name'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='sex'  " +
+                        "value='" +
+                        data['special_singer'][0]['s_sex'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='address'  " +
+                        "value='" +
+                        data['special_singer'][0]['s_address'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='company'  " +
+                        "value='" +
+                        data['special_singer'][0]['s_company'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<button name='save' onclick='save(" +
+                        data['special_singer'][0]['id'] +
+                        ")'  " +
+                        "value='" +
+                        data['special_singer'][0]['id'] +
+                        "'>" +
+                        "保存" +
+                        "</button></td>";
+
+                    $("#" + data['special_singer'][0]['id']).html(str);
+                },
+                error: function (msg) {//ajax请求失败后触发的方法
+                    alert("错误");//弹出错误信息
+                }
+            });
+        }
+        //保存修改
+        function save(id) {
+            var s_name = document.getElementById(id).getElementsByTagName("input")[0].value;
+            var s_sex = document.getElementById(id).getElementsByTagName("input")[1].value;
+            var s_address = document.getElementById(id).getElementsByTagName("input")[2].value;
+            var s_company = document.getElementById(id).getElementsByTagName("input")[3].value;
+            var url = "<?php echo site_url('/admin/changesinger');?>";
+
+            var str = '';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    id: id,
+                    's_name': s_name,
+                    's_sex': s_sex,
+                    's_address': s_address,
+                    's_company': s_company
+                },
+                dataType: "JSON",
+                success: function (data) {
+                    str += "<td>" +
+                        data['special_singer'][0]["s_name"] +
+                        "</td><td>" +
+                        data['special_singer'][0]["s_sex"] +
+                        "</td><td>" +
+                        data['special_singer'][0]["s_address"] +
+                        "</td><td>" +
+                        data['special_singer'][0]["s_company"] +
+                        "</td><td>" +
+                        "<button name='delete' onclick='delete(" +
+                        data['special_singer'][0]["id"] +
+                        ")' value='" +
+                        data['special_singer'][0]["id"] +
+                        "'>" +
+                        "删除</button>" +
+                        "<button name='edit' onclick='edit(" +
+                        data['special_singer'][0]["id"] +
+                        ")'  value='" +
+                        data['special_singer'][0]["id"] + "'>" +
+                        "编辑</button>" +
+                        "</td>";
+
+                    $("#" + data['special_singer'][0]['id']).html(str);
+                    alert("保存成功！！！");
+                },
+                error: function (msg) {//ajax请求失败后触发的方法
+                    alert("错误");//弹出错误信息
+                }
+            });
+        }
+
+    </script>
+
+</head>
+
+<body class="bg-success">
+
+<div class="container">
+    <h1>歌手管理</h1>
+    <table class="table table-hover">
+        <thead>
+        <td>歌手名</td>
+        <td>性别</td>
+        <td>地址</td>
+        <td>公司</td>
+        <td>操作</td>
+        </thead>
+        <tbody id="singer">
+        <?php foreach($singer as $v): ?>
+        <tr id="<?php echo $v['id'];?>">
+            <td>
+                <?php echo $v['s_name'];?>
+            </td>
+            <td>
+                <?php echo $v['s_sex'];?>
+            </td>
+            <td>
+                <?php echo $v['s_address'];?>
+            </td>
+            <td>
+                <?php echo $v['s_company'];?>
+            </td>
+            <td>
+                <button name="delete" value="<?php echo $v['id'];?>" onclick="delet(value)">
+                    删除
+                </button>
+                <button name="edit" value="<?php echo $v['id'];?>" onclick="edit(value)">
+                    编辑
+                </button>
+            </td>
+        </tr>
+        <?php endforeach ?>
+    </table>
+    <h3>歌手添加</h3>
+    <form class="myform" method="post" action="<?php echo site_url().'/admin/addsinger/';?>">
+        <div class="form-group" >
+            <label>歌手名</label>
+            <input type="text" class="form-control" name="n">
+            <label>性别</label>
+            <br>
+            <input id="man" type="radio" checked="checked" name="s"value="男" />男<input id="woman" type="radio"  name="s" value="女"/>女
+            <br>
+            <label>地址</label>
+            <input type="text" class="form-control" name="a">
+            <label>公司</label>
+            <input type="text" class="form-control" name="c">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+
+</body>
+
+</html>

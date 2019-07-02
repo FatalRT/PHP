@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewpor" content="width=device-width,initial-scale=1.0">
+    <title>落音</title>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap-theme.css';?>"/>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap-theme.min.css';?>"/>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap.css';?>"/>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap.min.css';?>"/>
+    <link rel="stylesheet" href="<?php echo base_url().'/resource/css/style.css';?>"/>
+
+    <script src="<?php echo base_url().'/resource/js/jquery.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/jquery.min.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/bootstrap.js'; ?>"></script>
+    <script src="<?php echo base_url().'/resource/js/bootstrap.min.js'; ?>"></script>
+    <style type="text/css">
+        input {
+            width: 120px;
+        }
+    </style>
+    <script>
+        //删除
+        function delet(id) {
+            if (confirm("确定删除")) {
+                var url = "<?php echo site_url('/admin/deletesong');?>";
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        id: id
+                    },
+                    dataType: "JSON",
+
+                    success: function (data) {
+                        var i;
+                        var str = '';
+                        var state = '';
+                        for (i = 0; i < data['song'].length; i++) {
+                            str += "<tr id='" +
+                                data['song'][i]["id"] +
+                                "'><td>" +
+                                data['song'][i]["g_name"] +
+                                "</td><td>" +
+                                data['song'][i]["g_album"] +
+                                "</td><td>" +
+                                data['song'][i]["g_style"] +
+                                "</td><td>" +
+                                data['song'][i]["g_language"] +
+                                "</td><td>" +
+                                data['song'][i]["g_num"] +
+                                "</td><td>" +
+                                data['song'][i]["g_singer"] +
+                                "</td><td>" +
+                                "<button name='delete' onclick='delet(" +
+                                data['song'][i]["id"] +
+                                ")'  value='" +
+                                data['song'][i]["id"] +
+                                "'>" +
+                                "删除</button>" +
+                                "<button name='edit' onclick='edit(" +
+                                data['song'][i]["id"] +
+                                ")' value='" +
+                                data['song'][i]["id"] + "'>" +
+                                "编辑</button>" +
+                                "</td></tr>";
+                        }
+                        $("#song").html(str);
+                    },
+                    error: function (msg) {//ajax请求失败后触发的方法
+                        alert("错误");//弹出错误信息
+                    }
+                });
+            }
+        }
+        //修改
+        function edit(id) {
+            var url = "<?php echo site_url('/admin/getsong');?>";
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    id: id
+                },
+                dataType: "JSON",
+                success: function (data) {
+                    var str = "<td>" +
+                        "<input type='text' required='required' name='name'  " +
+                        "value='" +
+                        data['special_song'][0]['g_name'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='album'  " +
+                        "value='" +
+                        data['special_song'][0]['g_album'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='style'  " +
+                        "value='" +
+                        data['special_song'][0]['g_style'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='language'  " +
+                        "value='" +
+                        data['special_song'][0]['g_language'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='num'  " +
+                        "value='" +
+                        data['special_song'][0]['g_num'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<input type='text' required='required' name='singer'  " +
+                        "value='" +
+                        data['special_song'][0]['g_singer'] +
+                        "'>" +
+                        "</td><td>" +
+                        "<button name='save' onclick='save(" +
+                        data['special_song'][0]['id'] +
+                        ")'  " +
+                        "value='" +
+                        data['special_song'][0]['id'] +
+                        "'>" +
+                        "保存" +
+                        "</button></td>";
+
+                    $("#" + data['special_song'][0]['id']).html(str);
+                },
+                error: function (msg) {//ajax请求失败后触发的方法
+                    alert("错误");//弹出错误信息
+                }
+            });
+        }
+        //保存修改
+        function save(id) {
+            var g_name = document.getElementById(id).getElementsByTagName("input")[0].value;
+            var g_album = document.getElementById(id).getElementsByTagName("input")[1].value;
+            var g_style = document.getElementById(id).getElementsByTagName("input")[2].value;
+            var g_language = document.getElementById(id).getElementsByTagName("input")[3].value;
+            var g_num = document.getElementById(id).getElementsByTagName("input")[4].value;
+            var g_singer = document.getElementById(id).getElementsByTagName("input")[5].value;
+
+            var url = "<?php echo site_url('/admin/changesong');?>";
+
+            var str = '';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    id: id,
+                    'g_name': g_name,
+                    'g_album': g_album,
+                    'g_style': g_style,
+                    'g_language': g_language,
+                    'g_num': g_num,
+                    'g_singer': g_singer
+                },
+                dataType: "JSON",
+                success: function (data) {
+                    str += "<td>" +
+                        data['special_song'][0]["g_name"] +
+                        "</td><td>" +
+                        data['special_song'][0]["g_album"] +
+                        "</td><td>" +
+                        data['special_song'][0]["g_style"] +
+                        "</td><td>" +
+                        data['special_song'][0]["g_language"] +
+                        "</td><td>" +
+                        data['special_song'][0]["g_num"] +
+                        "</td><td>" +
+                        data['special_song'][0]["g_singer"] +
+                        "</td><td>" +
+                        "<button name='delete' onclick='delete(" +
+                        data['special_song'][0]["id"] +
+                        ")' value='" +
+                        data['special_song'][0]["id"] +
+                        "'>" +
+                        "删除</button>" +
+                        "<button name='edit' onclick='edit(" +
+                        data['special_song'][0]["id"] +
+                        ")'  value='" +
+                        data['special_song'][0]["id"] + "'>" +
+                        "编辑</button>" +
+                        "</td>";
+
+                    $("#" + data['special_song'][0]['id']).html(str);
+                    alert("保存成功！！！");
+                },
+                error: function (msg) {//ajax请求失败后触发的方法
+                    alert("错误");//弹出错误信息
+                }
+            });
+        }
+
+    </script>
+
+</head>
+
+<body class="bg-success">
+
+<div class="container">
+    <h1>歌曲管理</h1>
+    <table class="table table-hover">
+        <thead>
+        <td>歌曲名</td>
+        <td>所属专辑</td>
+        <td>风格</td>
+        <td>语种</td>
+        <td>点击量</td>
+        <td>歌手</td>
+        <td>操作</td>
+        </thead>
+        <tbody id="song">
+        <?php foreach($song as $v): ?>
+        <tr id="<?php echo $v['id'];?>">
+            <td>
+                <?php echo $v['g_name'];?>
+            </td>
+            <td>
+                <?php echo $v['g_album'];?>
+            </td>
+            <td>
+                <?php echo $v['g_style'];?>
+            </td>
+            <td>
+                <?php echo $v['g_language'];?>
+            </td>
+            <td>
+                <?php echo $v['g_num'];?>
+            </td>
+            <td>
+                <?php echo $v['g_singer'];?>
+            </td>
+            <td>
+                <button name="delete" value="<?php echo $v['id'];?>" onclick="delet(value)">
+                    删除
+                </button>
+                <button name="edit" value="<?php echo $v['id'];?>" onclick="edit(value)">
+                    编辑
+                </button>
+            </td>
+        </tr>
+        <?php endforeach ?>
+    </table>
+    <h3>歌曲添加</h3>
+    <form class="myform" method="post" action="<?php echo site_url().'/admin/addsong/';?>">
+        <div class="form-group" >
+            <label>歌曲名</label>
+            <input type="text" class="form-control" name="a">
+            <label>专辑名</label>
+            <input type="text" class="form-control" name="al">
+            <label>风格</label>
+            <input type="text" class="form-control" name="s">
+            <label>语种</label>
+            <input type="text" class="form-control" name="l">
+            <label>歌手</label>
+            <input type="text" class="form-control" name="sr">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+
+</body>
+
+</html>

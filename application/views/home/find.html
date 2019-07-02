@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewpor" content="width=device-width,initial-scale=1.0">
+		<title>落音</title>
+		<link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap-theme.css';?>" />
+		<link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap-theme.min.css';?>" />
+		<link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap.css';?>" />
+		<link rel="stylesheet" href="<?php echo base_url().'/resource/css/bootstrap.min.css';?>" />
+		<link rel="stylesheet" href="<?php echo base_url().'/resource/css/style.css';?>" />
+	</head>
+
+	<body class="bg">
+		<div class="container">
+			<!--居中-->
+			<!--标题-->
+			<h1>落音<small>———简单的音乐平台</small></h1>
+			<!--导航栏 -->
+			<nav class="navbar navbar-inverse">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+					<a class="navbar-brand" href="#">落音</a>
+				</div>
+				<div id="navbar-menu" class="collapse navbar-collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<a href="<?php echo site_url().'/Welcome/index/';?>">首页</a>
+						</li>
+						<li class="active">
+							<a href="<?php echo site_url().'/Welcome/find/';?>">歌曲搜索</a>
+						</li>
+						<li>
+							<a href="<?php echo site_url().'/Welcome/user/';?>">私人乐库</a>
+						</li>
+						<li>
+							<a href="<?php echo site_url().'/Welcome/admin/';?>">后台管理</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+			<!--内容-->
+
+				<!--主要-->
+				<div class="row">
+					<div class="col-md-2">
+						<ul id="main-nav" class="nav nav-tabs nav-stacked" style="text-align: center;">
+							<li>
+								<a href="<?php echo site_url().'/find/fsong/';?>" target="mainFrame">
+									歌曲搜索
+								</a>
+							</li>
+							<li>
+								<a href="<?php echo site_url().'/find/fsinger/';?>"  target="mainFrame">
+									歌手搜索
+								</a>
+							</li>
+							<li>
+								<a href="<?php echo site_url().'/find/falbum/';?>" target="mainFrame">
+									专辑搜索
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-10">
+						<iframe src="<?php echo site_url().'/find/v/';?>" id="mainFrame" name="mainFrame" frameborder="0" width="100%"  height="100%" frameBorder="0"></iframe>
+					</div>
+				</div>
+			</div>
+                <!--主要-->
+		</div>
+			<!--尾部-->
+			<div class="footer">
+				<p class="text-center">
+
+					2018 &copy; TCJ-Music.
+
+				</p>
+			</div>
+		</div>
+		<!--居中-->
+		<script src="resource/js/jquery.js"></script>
+		<script src="resource/js/jquery.min.js"></script>
+		<script src="resource/js/bootstrap.js"></script>
+		<script src="resource/js/bootstrap.min.js"></script>
+	</body>
+
+</html>
